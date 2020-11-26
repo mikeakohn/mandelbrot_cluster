@@ -338,6 +338,59 @@ int test_times_2()
   return 0;
 }
 
+int test_multiply_fast()
+{
+  uint32_t *digits;
+
+  BigFixed zr(0.0);
+  BigFixed zi(0.0);
+
+  digits = zr.getDigits();
+  digits[0] = 0x00000000;
+  digits[1] = 0x00000000;
+  digits[2] = 0xffffffff;
+  digits[3] = 0xffffffff;
+  digits[4] = 0xffffffff;
+  digits[5] = 0x00000008;
+  digits[6] = 0x00000000;
+  digits[7] = 0x00000000;
+  zr.setPositive();
+
+  digits = zi.getDigits();
+  digits[0] = 0x00000000;
+  digits[1] = 0x00000000;
+  digits[2] = 0xffffffff;
+  digits[3] = 0xffffffff;
+  digits[4] = 0xffffffff;
+  digits[5] = 0x00000008;
+  digits[6] = 0x00000000;
+  digits[7] = 0x00000000;
+  zi.setPositive();
+
+//zr.dump();
+//zi.dump();
+
+  zr.square();
+  zi.squareSlow();
+
+//zr.dump();
+//zi.dump();
+
+  uint32_t *digits_zr = zr.getDigits();
+  uint32_t *digits_zi = zi.getDigits();
+
+  for (int n = 0; n < LENGTH; n++)
+  {
+    if (digits_zr[n] != digits_zi[n])
+    {
+      printf("Error: %d> %d %d\n", n, digits_zr[n], digits_zi[n]);
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 int main(int argc, char *argv[])
 {
   int errors = 0;
@@ -362,6 +415,8 @@ int main(int argc, char *argv[])
   errors += test_square_1();
   errors += test_copy();
   errors += test_times_2();
+
+  errors += test_multiply_fast();
 
   printf("%s\n", errors == 0 ? "PASSED" : "FAILED");
 
