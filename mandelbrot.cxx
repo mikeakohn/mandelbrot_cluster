@@ -85,7 +85,8 @@ int mandel_calc(
         BigFixed result = zr;
         BigFixed temp = zi;
 
-        if (result.getWholeValue() + temp.getWholeValue() >= 4) { break; }
+        if (result.getWholeValue() >= 2) { break; }
+        if (temp.getWholeValue() >= 2) { break; }
 
         result.square();
         temp.square();
