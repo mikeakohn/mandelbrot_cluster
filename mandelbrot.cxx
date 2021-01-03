@@ -74,6 +74,11 @@ int mandel_calc(
         // zr = tr + r;
         zr.square();
         zi.square();
+
+        BigFixed result = zr;
+        result.add(zi);
+        if (result.getFloor() >= 4) { break; }
+
         zr.subtract(zi);
         zr.add(r);
 
@@ -82,6 +87,7 @@ int mandel_calc(
         zi.add(i);
 
         // if ((zr * zr) + (zi * zi) > 4) { break; }
+#if 0
         BigFixed result = zr;
         BigFixed temp = zi;
 
@@ -93,6 +99,7 @@ int mandel_calc(
         result.add(temp);
 
         if (result.getFloor() >= 4) { break; }
+#endif
       }
 
       picture[ptr++] = colors[count >> 3];
