@@ -140,57 +140,46 @@ public:
   void multiplyTimesTwo()
   {
     int n;
-    int r = 0;
+    int carry = 0;
 
     for (n = 0; n < LENGTH; n++)
     {
       uint64_t a = (uint64_t)digits[n] << 1;
 
-      digits[n] = (a & 0xffffffff) + r;
-      r = a >> 32;
+      digits[n] = (a & 0xffffffff) + carry;
+      carry = a >> 32;
     }
   }
 
   void multiply(const BigFixed &num)
   {
     uint32_t answer[ANSWER_LENGTH];
-    int n, i, j;
-    uint32_t r;
+    int n, i;
 
     memset(answer, 0, sizeof(answer));
 
     // For every digit in "num".
     for (n = 0; n < LENGTH; n++)
     {
+      uint64_t carry = 0;
+      uint64_t value;
+      int index = n;
+
       // Multiply that digit by every digit in "this".
       for (i = 0; i < LENGTH; i++)
       {
-        uint64_t a = (uint64_t)num.digits[n] * (uint64_t)digits[i];
+        value = (uint64_t)num.digits[n] * (uint64_t)digits[i];
+        value += carry + (uint64_t)answer[index];
 
-        if (a == 0) { continue; }
+        carry = value >> 32;
+        answer[index++] = value & 0xffffffff;
+      }
 
-        uint64_t carry = a >> 32;
-        a &= 0xffffffff;
-
-        r = 0;
-
-        // Add the result and carry to answer, every iteration shifted by one
-        // index.
-        for (j = n + i; j < ANSWER_LENGTH; j++)
-        {
-          a += (uint64_t)answer[j] + r;
-
-          r = a >> 32;
-          a &= 0xffffffff;
-
-          answer[j] = a;
-          a = 0;
-
-          r += carry;
-          carry = 0;
-
-          if (r == 0) { break; }
-        }
+      while (index < ANSWER_LENGTH && carry != 0)
+      {
+        value = (uint64_t)answer[index] + carry;
+        carry = value >> 32;
+        answer[index++] = value & 0xffffffff;
       }
     }
 
@@ -209,43 +198,32 @@ public:
   void square()
   {
     uint32_t answer[ANSWER_LENGTH];
-    int n, i, j;
-    uint32_t r;
+    int n, i;
 
     memset(answer, 0, sizeof(answer));
 
     // For every digit in "num".
     for (n = 0; n < LENGTH; n++)
     {
+      uint64_t carry = 0;
+      uint64_t value;
+      int index = n;
+
       // Multiply that digit by every digit in "this".
       for (i = 0; i < LENGTH; i++)
       {
-        uint64_t a = (uint64_t)digits[n] * (uint64_t)digits[i];
+        value = (uint64_t)digits[n] * (uint64_t)digits[i];
+        value += carry + (uint64_t)answer[index];
 
-        if (a == 0) { continue; }
+        carry = value >> 32;
+        answer[index++] = value & 0xffffffff;
+      }
 
-        uint64_t carry = a >> 32;
-        a &= 0xffffffff;
-
-        r = 0;
-
-        // Add the result and carry to answer, every iteration shifted by one
-        // index.
-        for (j = n + i; j < ANSWER_LENGTH; j++)
-        {
-          a += (uint64_t)answer[j] + r;
-
-          r = a >> 32;
-          a &= 0xffffffff;
-
-          answer[j] = a;
-          a = 0;
-
-          r += carry;
-          carry = 0;
-
-          if (r == 0) { break; }
-        }
+      while (index < ANSWER_LENGTH && carry != 0)
+      {
+        value = (uint64_t)answer[index] + carry;
+        carry = value >> 32;
+        answer[index++] = value & 0xffffffff;
       }
     }
 
