@@ -3,6 +3,7 @@
 
 //#include "BigNumber.h"
 #include "BigFixed.h"
+#include "BigFixedSlow.h"
 
 int test_add_1()
 {
@@ -343,7 +344,7 @@ int test_multiply_fast()
   uint32_t *digits;
 
   BigFixed zr(0.0);
-  BigFixed zi(0.0);
+  BigFixedSlow zi(0.0);
 
   digits = zr.getDigits();
   digits[0] = 0x00000000;
