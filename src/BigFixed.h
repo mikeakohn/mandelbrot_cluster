@@ -161,11 +161,11 @@ public:
     // For every digit in "num".
     for (n = 0; n < LENGTH; n++)
     {
+      if (num.digits[n] == 0) { continue; }
+
       uint64_t carry = 0;
       uint64_t value;
       int index = n;
-
-      //if (digits[n] == 0) { continue; }
 
       // Multiply that digit by every digit in "this".
       for (i = 0; i < LENGTH; i++)
@@ -207,11 +207,11 @@ public:
     // For every digit in "num".
     for (n = 0; n < LENGTH; n++)
     {
+      if (digits[n] == 0) { continue; }
+
       uint64_t carry = 0;
       uint64_t value;
       int index = n;
-
-      //if (digits[n] == 0) { continue; }
 
       // Multiply that digit by every digit in "this".
       for (i = 0; i < LENGTH; i++)
