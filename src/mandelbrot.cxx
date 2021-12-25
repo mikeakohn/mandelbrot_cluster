@@ -47,7 +47,7 @@ uint32_t *read_digits(uint32_t *digits, char *s)
 
   memset(digits, 0, sizeof(uint32_t) * 8);
 
-  for (r = 1; r < 65; r++)
+  for (r = 1; r < 65; r += 8)
   {
     char d[16];
     memset(d, 0, sizeof(d));

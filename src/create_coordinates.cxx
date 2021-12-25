@@ -42,11 +42,6 @@ int main(int argc, char *argv[])
   BigFixed i0(-1.25);
   BigFixed i1( 1.25);
 
-  //double r0 = -2.00;
-  //double r1 =  1.00;
-  //double i0 = -1.25;
-  //double i1 =  1.25;
-
   out = fopen("coordinates.txt", "wb");
 
   if (out == NULL)
