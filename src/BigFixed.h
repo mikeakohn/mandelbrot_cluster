@@ -1,3 +1,13 @@
+/**
+ *  BigFixed.h
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: https://www.mikekohn.net/
+ * License: GPLv3
+ *
+ * Copyright 2021 by Michael Kohn
+ *
+ */
 
 #ifndef BIG_FIXED_H
 #define BIG_FIXED_H
@@ -30,6 +40,11 @@ public:
     double fraction = value - whole;
 
     set(whole, fraction);
+  }
+
+  BigFixed(uint32_t *data, bool is_negative) : is_negative(is_negative)
+  {
+    memcpy(digits, data, sizeof(digits));
   }
 
   BigFixed(const BigFixed &num) : is_negative(num.is_negative)
@@ -148,6 +163,21 @@ public:
 
       digits[n] = (a & 0xffffffff) + carry;
       carry = a >> 32;
+    }
+  }
+
+  void divideLog2(int value)
+  {
+    uint32_t mask = (1 << value) - 1;
+    uint32_t carry = 0;
+    int n;
+
+    for (n = LENGTH - 1; n >= 0; n--)
+    {
+      uint32_t new_carry = (digits[n] & mask) << (32 - value);
+      digits[n] = carry | (digits[n] >> value);
+
+      carry = new_carry;
     }
   }
 
@@ -298,6 +328,11 @@ for (n = 0; n < ANSWER_LENGTH; n++)
   uint32_t *getDigits()
   {
     return digits;
+  }
+
+  int getDigitsLength()
+  {
+    return LENGTH;
   }
 
 protected:
