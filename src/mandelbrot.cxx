@@ -57,10 +57,12 @@ uint32_t *read_digits(uint32_t *digits, char *s)
     digits[n++] = value;
   }
 
+#if 0
   for (n = 0; n < 8; n++)
   {
     printf("%08x\n", digits[n]);
   }
+#endif
 
   return digits;
 }

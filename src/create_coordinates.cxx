@@ -50,7 +50,19 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  for (n = 0; n < 10; n++)
+  BigFixed rx(r1);
+  BigFixed ix(i1);
+
+  rx.subtract(r0);
+  ix.subtract(i0);
+
+  rx.divideLog2(1);
+  ix.divideLog2(1);
+
+  rx.divideLog2(4);
+  ix.divideLog2(4);
+
+  for (n = 0; n < 16; n++)
   {
     fprintf(out, "frame_%05d.bmp:\n", frame_count++);
 
@@ -58,6 +70,9 @@ int main(int argc, char *argv[])
     printDigits(out, r1);
     printDigits(out, i0);
     printDigits(out, i1);
+
+    r0.add(rx);
+    i0.add(ix);
   }
 
   fclose(out);
