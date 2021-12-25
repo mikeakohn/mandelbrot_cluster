@@ -166,12 +166,12 @@ public:
       uint64_t carry = 0;
       uint64_t value;
       int index = n;
+      const uint64_t d = num.digits[n];
 
       // Multiply that digit by every digit in "this".
       for (i = 0; i < LENGTH; i++)
       {
-        value = (uint64_t)num.digits[n] * (uint64_t)digits[i];
-        value += carry + (uint64_t)answer[index];
+        value = d * (uint64_t)digits[i] + carry + (uint64_t)answer[index];
 
         carry = value >> 32;
         answer[index++] = value & 0xffffffff;
@@ -212,12 +212,12 @@ public:
       uint64_t carry = 0;
       uint64_t value;
       int index = n;
+      const uint64_t d = digits[n];
 
       // Multiply that digit by every digit in "this".
       for (i = 0; i < LENGTH; i++)
       {
-        value = (uint64_t)digits[n] * (uint64_t)digits[i];
-        value += carry + (uint64_t)answer[index];
+        value = d * (uint64_t)digits[i] + carry + (uint64_t)answer[index];
 
         carry = value >> 32;
         answer[index++] = value & 0xffffffff;

@@ -8,7 +8,8 @@
 #include "write_bmp.h"
 
 #define WIDTH 1024
-#define HEIGHT 768
+#define HEIGHT 1024
+//#define HEIGHT 768
 
 static int colors[] =
 {
@@ -117,30 +118,22 @@ int main(int argc, char *argv[])
 {
   struct timeval tv_start, tv_end;
   int picture[WIDTH * HEIGHT];
-#if 0
-  double real_start = -0.1592 - 0.01;
-  double real_end = -0.1592 + 0.01;
-  double imaginary_start = -1.0317 - 0.01;
-  double imaginary_end = -1.0317 + 0.01;
-#endif
+  const char *filename;
 
-  double real_start = 0.37 - 0.00;
-  double real_end = 0.37 + 0.04;
-  double imaginary_start = -0.2166 - 0.02;
-  double imaginary_end = -0.2166 + 0.02;
-
-#if 0
-  double real_start = -2.00;
-  double real_end = 1.00;
-  double imaginary_start = -1.00;
-  double imaginary_end = 1.00;
-#endif
-
-  if (argc != 1)
+  if (argc != 6)
   {
-    printf("Usage: %s\n", argv[0]);
+    printf("Usage: %s <real_start> <real_end> <imaginary_start> <imaginary_end> <filename>\n", argv[0]);
     exit(0);
   }
+
+  double real_start = atof(argv[1]);
+  double real_end = atof(argv[2]);
+  double imaginary_start = atof(argv[3]);
+  double imaginary_end = atof(argv[4]);
+  filename = argv[5];
+
+  printf("Generate: %s %f %f %f %f\n",
+     filename, real_start, real_end, imaginary_start, imaginary_end);
 
   gettimeofday(&tv_start, NULL);
 
@@ -148,28 +141,14 @@ int main(int argc, char *argv[])
 
   gettimeofday(&tv_end, NULL);
 
-#if 0
-  int picture2[WIDTH * HEIGHT];
-  mandel_calc(picture2, WIDTH, HEIGHT, real_start, real_end, imaginary_start, imaginary_end);
-
-  int n;
-  for (n = 0; n < WIDTH * HEIGHT; n++)
-  {
-    if (picture[n] != picture2[n])
-    {
-      printf("error %d  %8x %8x\n", n, picture[n], picture2[n]);
-    }
-  }
-#endif
-
-  printf("%ld %ld\n", tv_end.tv_sec, tv_end.tv_usec);
-  printf("%ld %ld\n", tv_start.tv_sec, tv_start.tv_usec);
+  //printf("%ld %ld\n", tv_end.tv_sec, tv_end.tv_usec);
+  //printf("%ld %ld\n", tv_start.tv_sec, tv_start.tv_usec);
   long time_diff = tv_end.tv_usec - tv_start.tv_usec;
   while(time_diff < 0) { tv_end.tv_sec--; time_diff += 1000000; }
   time_diff += (tv_end.tv_sec - tv_start.tv_sec) * 1000000;
   printf("time=%f\n", (float)time_diff / 1000000);
 
-  write_bmp("out.bmp", picture, WIDTH, HEIGHT);
+  write_bmp(filename, picture, WIDTH, HEIGHT);
 
   return 0;
 }
