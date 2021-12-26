@@ -30,6 +30,106 @@
 
 struct Coordinates
 {
+  Coordinates() : frame_count(0) { }
+
+  void compute(int value)
+  {
+    rx = r1;
+    ix = i1;
+
+    rx.subtract(r0);
+    ix.subtract(i0);
+
+    rx.divideLog2(DIVISOR + value);
+    ix.divideLog2(DIVISOR + value);
+
+    rx_negative = rx;
+    ix_negative = ix;
+
+    rx_negative.negate();
+    ix_negative.negate();
+  }
+
+  void advance()
+  {
+    r0.add(rx);
+    i0.add(ix);
+    r1.add(rx_negative);
+    i1.add(ix_negative);
+  }
+
+  void advanceWithoutNegative()
+  {
+    r0.add(rx);
+    i0.add(ix);
+  }
+
+  void advanceWithoutPositive()
+  {
+    r1.add(rx_negative);
+    i1.add(ix_negative);
+  }
+
+  void advancePositiveRNegativeI()
+  {
+    r0.add(rx);
+    i1.add(ix_negative);
+  }
+
+  void advanceNegative()
+  {
+    r0.add(rx_negative);
+    i1.add(ix_negative);
+  }
+
+  void doubleSpeed()
+  {
+    rx.multiplyTimesTwo();
+    ix.multiplyTimesTwo();
+    rx_negative.multiplyTimesTwo();
+    ix_negative.multiplyTimesTwo();
+  }
+
+  void divideLog2(int value)
+  {
+    rx.divideLog2(value);
+    ix.divideLog2(value);
+
+    rx_negative = rx;
+    ix_negative = ix;
+
+    rx_negative.negate();
+    ix_negative.negate();
+  }
+
+  void printDigits(FILE *out, BigFixed number)
+  {
+    uint32_t *digits = number.getDigits();
+    int count = number.getDigitsLength();
+    int n;
+
+    fprintf(out, "  %c", number.isNegative() ? '-' : '+');
+
+    for (n = 0; n < count; n ++)
+    {
+      fprintf(out, " %08x", digits[n]);
+    }
+
+    fprintf(out, "\n");
+  }
+
+  void print(FILE *out)
+  {
+    fprintf(out, "frame_%05d.bmp:\n", frame_count++);
+
+    printDigits(out, r0);
+    printDigits(out, r1);
+    printDigits(out, i0);
+    printDigits(out, i1);
+  }
+
+  int frame_count;
+
   BigFixed r0;
   BigFixed r1;
   BigFixed i0;
@@ -41,36 +141,22 @@ struct Coordinates
   BigFixed ix_negative;
 };
 
-void printDigits(FILE *out, BigFixed number)
-{
-  uint32_t *digits = number.getDigits();
-  int count = number.getDigitsLength();
-  int n;
-
-  fprintf(out, "  %c", number.isNegative() ? '-' : '+');
-
-  for (n = 0; n < count; n ++)
-  {
-    fprintf(out, " %08x", digits[n]);
-  }
-
-  fprintf(out, "\n");
-}
-
-void zoom()
+void zoom(Coordinates &coordinates)
 {
 }
 
 int main(int argc, char *argv[])
 {
   FILE *out;
-  int frame_count = 0;
+  //int frame_count = 0;
   int n;
 
-  BigFixed r0(-2.00);
-  BigFixed r1( 1.00);
-  BigFixed i0(-1.25);
-  BigFixed i1( 1.25);
+  Coordinates coordinates;
+
+  coordinates.r0 = -2.00;
+  coordinates.r1 =  1.00;
+  coordinates.i0 = -1.25;
+  coordinates.i1 =  1.25;
 
   out = fopen("coordinates.txt", "wb");
 
@@ -80,166 +166,119 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  BigFixed rx(r1);
-  BigFixed ix(i1);
+  coordinates.compute(0);
 
-  rx.subtract(r0);
-  ix.subtract(i0);
-
-  rx.divideLog2(DIVISOR);
-  ix.divideLog2(DIVISOR);
-
-  printf("frame_count=%d\n", frame_count);
+  printf("frame_count=%d\n", coordinates.frame_count);
 
   for (n = 0; n < 128; n++)
   {
-    fprintf(out, "frame_%05d.bmp:\n", frame_count++);
-
-    printDigits(out, r0);
-    printDigits(out, r1);
-    printDigits(out, i0);
-    printDigits(out, i1);
-
-    r0.add(rx);
-    i0.add(ix);
+    coordinates.print(out);
+    coordinates.advanceWithoutNegative();
   }
 
-  rx.divideLog2(2);
-  ix.divideLog2(2);
+  coordinates.divideLog2(2);
 
-  BigFixed rx_negative(rx);
-  BigFixed ix_negative(ix);
-
-  rx_negative.negate();
-  ix_negative.negate();
-
-  printf("frame_count=%d\n", frame_count);
+  printf("frame_count=%d\n", coordinates.frame_count);
 
   for (n = 0; n < 64; n++)
   {
-    fprintf(out, "frame_%05d.bmp:\n", frame_count++);
-
-    printDigits(out, r0);
-    printDigits(out, r1);
-    printDigits(out, i0);
-    printDigits(out, i1);
-
-    r0.add(rx);
-    i0.add(ix);
-    r1.add(rx_negative);
-    i1.add(ix_negative);
+    coordinates.print(out);
+    coordinates.advance();
   }
 
-  RECALCULATE();
+  coordinates.compute(1);
 
-  rx.divideLog2(DIVISOR + 1);
-  ix.divideLog2(DIVISOR + 1);
-  rx_negative.divideLog2(DIVISOR + 1);
-  ix_negative.divideLog2(DIVISOR + 1);
-
-  printf("frame_count=%d\n", frame_count);
+  printf("frame_count=%d\n", coordinates.frame_count);
 
   for (n = 0; n < 200; n++)
   {
-    fprintf(out, "frame_%05d.bmp:\n", frame_count++);
-
-    printDigits(out, r0);
-    printDigits(out, r1);
-    printDigits(out, i0);
-    printDigits(out, i1);
-
-    r0.add(rx);
-    i0.add(ix);
-    r1.add(rx_negative);
-    i1.add(ix_negative);
+    coordinates.print(out);
+    coordinates.advance();
   }
+
+  printf("frame_count=%d\n", coordinates.frame_count);
 
   int r;
 
-  for (r = 0; r < 4; r++)
+  for (r = 0; r < 6; r++)
   {
-    RECALCULATE();
+    coordinates.compute(1);
 
-    rx.divideLog2(DIVISOR + 1);
-    ix.divideLog2(DIVISOR + 1);
-    rx_negative.divideLog2(DIVISOR + 1);
-    ix_negative.divideLog2(DIVISOR + 1);
+    printf("frame_count=%d\n", coordinates.frame_count);
 
-    printf("frame_count=%d\n", frame_count);
-
-    for (n = 0; n < 128; n++)
+    for (n = 0; n < 100; n++)
     {
-      fprintf(out, "frame_%05d.bmp:\n", frame_count++);
-
-      printDigits(out, r0);
-      printDigits(out, r1);
-      printDigits(out, i0);
-      printDigits(out, i1);
-
-      r0.add(rx);
-      //i0.add(ix);
-      //r1.add(rx_negative);
-      i1.add(ix_negative);
+      coordinates.print(out);
+      coordinates.advancePositiveRNegativeI();
     }
   }
+
+  printf("frame_count=%d\n", coordinates.frame_count);
 
   for (r = 0; r < 10; r++)
   {
-    RECALCULATE();
+    coordinates.compute(1);
 
-    rx.divideLog2(DIVISOR + 1);
-    ix.divideLog2(DIVISOR + 1);
-    rx_negative.divideLog2(DIVISOR + 1);
-    ix_negative.divideLog2(DIVISOR + 1);
-
-    printf("frame_count=%d\n", frame_count);
+    printf("frame_count=%d\n", coordinates.frame_count);
 
     for (n = 0; n < 128; n++)
     {
-      fprintf(out, "frame_%05d.bmp:\n", frame_count++);
-
-      printDigits(out, r0);
-      printDigits(out, r1);
-      printDigits(out, i0);
-      printDigits(out, i1);
-
-      r0.add(rx);
-      i0.add(ix);
-      r1.add(rx_negative);
-      i1.add(ix_negative);
+      coordinates.print(out);
+      coordinates.advance();
     }
   }
 
-#if 0
+  printf("frame_count=%d\n", coordinates.frame_count);
+
+  for (r = 0; r < 2; r++)
+  {
+    coordinates.compute(1);
+
+    printf("frame_count=%d\n", coordinates.frame_count);
+
+    for (n = 0; n < 100; n++)
+    {
+      coordinates.print(out);
+      //coordinates.advanceNegative();
+      coordinates.advanceWithoutNegative();
+    }
+  }
+
+  printf("frame_count=%d\n", coordinates.frame_count);
+
+  for (r = 0; r < 5; r++)
+  {
+    coordinates.compute(1);
+
+    printf("frame_count=%d\n", coordinates.frame_count);
+
+    for (n = 0; n < 128; n++)
+    {
+      coordinates.print(out);
+      coordinates.advance();
+    }
+  }
+
+  for (n = 0; n < 200; n++)
+  {
+    coordinates.print(out);
+    coordinates.advance();
+  }
+
+  printf("HERE frame_count=%d\n", coordinates.frame_count);
+
   for (r = 0; r < 10; r++)
   {
-    RECALCULATE();
+    coordinates.doubleSpeed();
 
-    rx.divideLog2(DIVISOR + 1);
-    ix.divideLog2(DIVISOR + 1);
-    rx_negative.divideLog2(DIVISOR + 1);
-    ix_negative.divideLog2(DIVISOR + 1);
-
-    printf("frame_count=%d\n", frame_count);
-
-    for (n = 0; n < 128; n++)
+    for (n = 0; n < 155; n++)
     {
-      fprintf(out, "frame_%05d.bmp:\n", frame_count++);
-
-      printDigits(out, r0);
-      printDigits(out, r1);
-      printDigits(out, i0);
-      printDigits(out, i1);
-
-      r0.add(rx);
-      i0.add(ix);
-      r1.add(rx_negative);
-      i1.add(ix_negative);
+      coordinates.print(out);
+      coordinates.advance();
     }
   }
-#endif
 
-  printf("total_count=%d\n", frame_count);
+  printf("total_count=%d\n", coordinates.frame_count);
 
   fclose(out);
 
