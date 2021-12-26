@@ -270,12 +270,18 @@ int main(int argc, char *argv[])
   for (r = 0; r < 10; r++)
   {
     coordinates.doubleSpeed();
+    coordinates.doubleSpeed();
+    coordinates.doubleSpeed();
 
     for (n = 0; n < 155; n++)
     {
       coordinates.print(out);
       coordinates.advance();
+
+      if (coordinates.frame_count >= 4668) { break; }
     }
+
+    if (coordinates.frame_count >= 4668) { break; }
   }
 
   printf("total_count=%d\n", coordinates.frame_count);
