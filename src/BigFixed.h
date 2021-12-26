@@ -280,6 +280,11 @@ for (n = 0; n < ANSWER_LENGTH; n++)
     is_negative = false;
   }
 
+  void negate()
+  {
+    is_negative = !is_negative;
+  }
+
   int getFloor()
   {
     if (isPositive())
