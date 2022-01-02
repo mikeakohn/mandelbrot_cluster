@@ -57,7 +57,7 @@ while True:
   count += 1
 
   # This if-statement is To help with debugging a small group of pictures.
-  #if count == 4: break
+  #if count == 32: break
 
 fp.close()
 db.close()
