@@ -23,8 +23,6 @@ count = 0
 db = sqlite3.connect("coordinates.db")
 fp = open("coordinates.txt", "r")
 
-#cursor = db.cursor()
-#cursor.execute(table)
 db.execute(table)
 
 while True:
@@ -59,7 +57,7 @@ while True:
   count += 1
 
   # This if-statement is To help with debugging a small group of pictures.
-  if count == 4: break
+  #if count == 4: break
 
 fp.close()
 db.close()
