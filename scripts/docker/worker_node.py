@@ -13,7 +13,10 @@ def create_image(host):
 
   for line in context:
     line = line.decode("utf-8").strip()
-    if line == "empty": return False
+
+    if line == "empty":
+      print("empty... done")
+      return False
 
     (name, value) = line.split(":")
 
@@ -34,8 +37,6 @@ def create_image(host):
   crop = "1024x768+0+128"
   jpeg = data["name"] + ".jpeg"
 
-  print(jpeg)
-
   os.system("convert -quality 100 -crop " + crop + " out.bmp " + jpeg)
 
   os.system("curl " +
@@ -47,8 +48,19 @@ def create_image(host):
 
 # ------------------------------ fold here -------------------------------
 
-while True:
-  value = create_image(host)
+print("Starting worker_node.py...")
 
-  if not value: break
+# Originally the idea was to have 16 pods spun up where each pod would
+# keep requesting new frames from the server. Unfortunately, Kubernetes
+# distributed the pods unevenly among the four Rasperry Pi's so now it
+# will create one frame per instance of a pod. Create 1000's of pods where
+# 16 can run at a time.
+
+#while True:
+#  value = create_image(host)
+#
+#  if not value: break
+#  value = create_image(host)
+
+value = create_image(host)
 
