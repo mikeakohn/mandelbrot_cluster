@@ -1,4 +1,5 @@
 mandelbrot
+create_coordinates
 test
 *.bmp
 *.o
