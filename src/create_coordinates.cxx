@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
     coordinates.advance();
   }
 
-  printf("HERE frame_count=%d\n", coordinates.frame_count);
+  printf("frame_count=%d\n", coordinates.frame_count);
 
   for (r = 0; r < 10; r++)
   {

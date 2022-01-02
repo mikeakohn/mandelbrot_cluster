@@ -20,6 +20,8 @@
 
 #define WIDTH 1024
 #define HEIGHT 1024
+//#define WIDTH 256
+//#define HEIGHT 256
 
 static int colors[] =
 {
@@ -175,10 +177,12 @@ int main(int argc, char *argv[])
     BigFixed r_step(r1);
     r_step.subtract(r0);
     r_step.divideLog2(10);
+    //r_step.divideLog2(8);
 
     BigFixed i_step(i1);
     i_step.subtract(i0);
     i_step.divideLog2(10);
+    //i_step.divideLog2(8);
 
     gettimeofday(&tv_start, NULL);
     mandel_calc(picture, r0, r1, r_step, i0, i1, i_step);
