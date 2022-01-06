@@ -4,7 +4,7 @@ metadata:
  name: mandelbrot
 spec:
   parallelism: 16
-  completions: 4668
+  completions: 94
   template:
     metadata:
       name: mandelbrot

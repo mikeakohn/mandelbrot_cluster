@@ -40,10 +40,11 @@ if ($rs = $query->fetch(PDO::FETCH_ASSOC))
   print "i1: ".$rs["i1"]."\n";
 
   $sql = "update coordinates ".
-         "set timestamp=$timestamp ".
-         "where coordinate_id=". $rs["coordinate_id"];
+         "set timestamp=$timestamp, ".
+         "ip_address='".$ip_address."' ".
+         "where coordinate_id=".$rs["coordinate_id"];
 
-  //print "<br><br>".$sql."<br><br>";
+  //print "sql: ".$sql;
 
   $db->query($sql);
 }

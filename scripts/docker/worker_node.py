@@ -50,17 +50,7 @@ def create_image(host):
 
 print("Starting worker_node.py...")
 
-# Originally the idea was to have 16 pods spun up where each pod would
-# keep requesting new frames from the server. Unfortunately, Kubernetes
-# distributed the pods unevenly among the four Rasperry Pi's so now it
-# will create one frame per instance of a pod. Create 1000's of pods where
-# 16 can run at a time.
-
-#while True:
-#  value = create_image(host)
-#
-#  if not value: break
-#  value = create_image(host)
-
-value = create_image(host)
+for count in range(0, 50):
+  value = create_image(host)
+  if not value: break
 
