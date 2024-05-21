@@ -266,8 +266,14 @@ int main(int argc, char *argv[])
   float imaginary_start = atof(argv[4]);
   float imaginary_end = atof(argv[5]);
 
-  if (strcmp(argv[1], "normal") == 0) { do_simd = 0; }
-  else if (strcmp(argv[1], "simd") == 0) { do_simd = 1; }
+  if (strcmp(argv[1], "normal") == 0)
+  {
+    do_simd = 0;
+  }
+  else if (strcmp(argv[1], "simd") == 0)
+  {
+    do_simd = 1;
+  }
 
   gettimeofday(&tv_start, NULL);
 

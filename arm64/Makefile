@@ -1,8 +1,10 @@
 FLAGS=-Wall -O3 -g
 #FLAGS=-Wall -g
-SIMD=mandelbrot_simd.o
+SIMD_O=mandelbrot_simd.o
+SIMD=-DSIMD $(SIMD_O)
 
-default: $(SIMD)
+
+default: $(SIMD_O)
 	gcc -o mandelbrot mandelbrot.c $(SIMD) $(FLAGS)
 
 mandelbrot_simd.o: mandelbrot_simd.asm

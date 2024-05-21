@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+ name: mandelbrot
+spec:
+  parallelism: 16
+  completions: 114
+  template:
+    metadata:
+      name: mandelbrot
+    spec:
+      containers:
+      - name: mandelbrot
+        image: localhost:32000/mandelbrot:local
+        imagePullPolicy: Always
+        command: ["/bin/bash", "/root/worker_node.sh"]
+      hostNetwork: true
+      restartPolicy: Never
+

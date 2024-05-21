@@ -41,7 +41,6 @@ for line in fp:
   r1 = tokens[2]
   i0 = tokens[3]
   i1 = tokens[4]
-  i1 = tokens[5]
   rotation = tokens[5]
 
   #print(name)
@@ -66,6 +65,9 @@ for line in fp:
   db.commit()
 
   count += 1
+
+  #print(query)
+  #print(count)
 
   # This if-statement is To help with debugging a small group of pictures.
   #if count == 32: break
