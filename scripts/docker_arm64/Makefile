@@ -5,3 +5,6 @@ default:
 push:
 	docker push localhost:32000/mandelbrot:local
 
+run:
+	docker run --rm -it mandelbrot:local /bin/bash
+
